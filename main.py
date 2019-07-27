@@ -34,3 +34,13 @@ if __name__ == '__main__':
 	dataFrame = pd.read_csv(dataFile, skiprows=1, sep=',', names=header)
 
 	print(dataFrame.head())
+
+	# Part 2
+	# Construct rating matrix
+	# User x MovieItem = Rating
+	# ID starts from 1, index starts from 0
+	ratingMatrix = np.zeros((max(dataFrame.userID), max(dataFrame.movieID)))
+	for row in dataFrame.itertuples():
+		ratingMatrix[row[1]-1,row[2]-1] = row[3]
+
+	entryCount = dataFrame.shape[0]

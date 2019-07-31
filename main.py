@@ -29,7 +29,25 @@ def predict_all(simMatrix, train, test):
 	# for prediction, use training set of ratingMatrix
 	predict = simMatrix.dot(train) / np.array([np.abs(simMatrix).sum(axis=1)]).T
 	mse = meanSquaredError(test[test.nonzero()].flatten(), predict[test.nonzero()].flatten())
-	print("mse of predict based on all is: ", str(mse))
+	print("mse of predict based on all is: " + str(mse))
+	return mse
+
+def predict_k(k, simMatrix, train, test):
+	predict = np.zeros((test.shape))
+	percent = -10
+	for userID in range(simMatrix.shape[0]):
+		if userID % (math.ceil(simMatrix.shape[0]/10)) == 0:
+			percent += 10
+			print(percent, "% finished")
+		#select top k except current userID
+		#since argsort gives inverse order, we use negative indexing
+		top_k = [np.argsort(simMatrix[:,userID], axis=-1, kind='quicksort')[-1:-k-1:-1]]
+		for movieID in range(train.shape[1]):
+			# similarity of curr user * ratingMatrix of curr item of top k / similarity of curr user sum
+			# it is simply one value
+			predict[userID, movieID] = simMatrix[userID,:][tuple(top_k)].dot(train[:,movieID][tuple(top_k)]) / np.sum(simMatrix[userID,:][tuple(top_k)])
+	mse = meanSquaredError(test[test.nonzero()].flatten(), predict[test.nonzero()].flatten())
+	print("mse of predict based on " + str(k) + " is: " + str(mse))
 	return mse
 
 
@@ -37,8 +55,8 @@ if __name__ == '__main__':
 	# Part 1
 	# Load and reformat data
 	# Default data position: data/ratings.csv
-	dataFile = 'data/ratings.csv'
-
+	#dataFile = 'data/ratings.csv'
+	dataFile = 'data-1m/ratings.dat'
 	if len(sys.argv) > 1:
 		# try command line input file as data resource
 		dataFile = sys.argv[1]
@@ -46,7 +64,7 @@ if __name__ == '__main__':
 			exit("Input file name Error: Check your argument or use default data file.")
 
 	header = ["userID", "movieID", "rating", "timestamp"]
-	dataFrame = pd.read_csv(dataFile, skiprows=1, sep=',', names=header)
+	dataFrame = pd.read_csv(dataFile, skiprows=1, sep='::', names=header, engine='python')
 	print("data read success")
 
 	# Part 2
@@ -73,7 +91,7 @@ if __name__ == '__main__':
 		nItemsTest = math.floor(0.1*len(userRatedMovies))
 		rMovieID = np.random.choice(userRatedMovies, size=nItemsTest, replace=False) #no-replacement selection
 		test[userID,rMovieID] = ratingMatrix[userID,rMovieID]
-		train[userID,rMovieID] = float(0)
+		train[userID,rMovieID] = 0
 	print("train-test split success")
 
 	# Part 4
@@ -84,5 +102,11 @@ if __name__ == '__main__':
 	simMatrix = sim/(norms*norms.T)
 	print("similarity matrix established")
 
-	mse_all = predict_all(simMatrix, train, test)
 	print("predict based on all users")
+	mse_all = predict_all(simMatrix, train, test)
+
+	k_list = [5]
+	mse_list = []
+	for k in k_list:
+		print("predict based on top " + str(k) + " user")
+		mse_list.append(predict_k(k, simMatrix, train, test))

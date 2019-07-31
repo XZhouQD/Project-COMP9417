@@ -9,9 +9,9 @@
 
 # Environment:
 # Python 3.7.3
-# pandas 0.23.3
-# numpy 1.16.1
-# matplotlib 3.0.2
+# pandas 0.25.0
+# numpy 1.17.0
+# matplotlib 3.1.1
 
 
 import pandas as pd
@@ -26,12 +26,9 @@ def meanSquaredError(test, predict):
 
 def predict_all(simMatrix, train, test):
 	# aggregate prediction matrix
-	# similarity sum / similarity * ratingMatrix
+	# similarity * ratingMatrix / similarity sum
 	# for prediction, use training set of ratingMatrix
-	predict = np.array([np.abs(simMatrix).sum(axis=1)]).T
-	print("denominator")
-	predict /= simMatrix.dot(train)
-	print("predict success")
+	predict = simMatrix.dot(train) / np.array([np.abs(simMatrix).sum(axis=1)]).T
 	mse = meanSquaredError(test[test.nonzero()].flatten(), predict[test.nonzero()].flatten())
 	print("mse of predict based on all is: ", str(mse))
 	return mse
@@ -42,12 +39,13 @@ if __name__ == '__main__':
 	# Load and reformat data
 	# Default data position: data/ratings.csv
 	dataFile = 'data/ratings.csv'
+
 	if len(sys.argv) > 1:
 		# try command line input file as data resource
 		dataFile = sys.argv[1]
 		if not os.path.isfile(dataFile):
 			exit("Input file name Error: Check your argument or use default data file.")
-	
+
 	header = ["userID", "movieID", "rating", "timestamp"]
 	dataFrame = pd.read_csv(dataFile, skiprows=1, sep=',', names=header)
 	print("data read success")
@@ -65,22 +63,24 @@ if __name__ == '__main__':
 	print("rating matrix established")
 
 	# Part 3
-	# train-test split, we make 15% of testing
+	# train-test split, we make 10% of testing for each user
 	# randomly choose from user's rating, move them to testing
 	train = ratingMatrix.copy()
 	test = np.zeros((nUsers, nMovies))
+
+	#nItemsTest = math.floor(0.1*float(entryCount)/nUsers)
 	for userID in range(nUsers):
 		userRatedMovies = ratingMatrix[userID,:].nonzero()[0];
-		nItemsTest = math.floor(len(userRatedMovies)*0.15)
+		nItemsTest = math.floor(0.1*len(userRatedMovies))
 		rMovieID = np.random.choice(userRatedMovies, size=nItemsTest, replace=False) #no-replacement selection
 		test[userID,rMovieID] = ratingMatrix[userID,rMovieID]
-		train[userID,rMovieID] = 0
+		train[userID,rMovieID] = float(0)
 	print("train-test split success")
 
 	# Part 4
 	# calculate similarity matrix based on training set
 	# use cosine similarity function from the lecture notes
-	sim = np.dot(train, train.T) + 1e-9 #self dot product, non-zero result
+	sim = np.dot(train, train.T) + 1e-6 #self dot product, non-zero result
 	norms = np.array([np.sqrt(np.diagonal(sim))]) #diagonal values
 	simMatrix = sim/(norms*norms.T)
 	print("similarity matrix established")

@@ -29,7 +29,21 @@ def predict_all(simMatrix, train, test):
 	# for prediction, use training set of ratingMatrix
 	predict = simMatrix.dot(train) / np.array([np.abs(simMatrix).sum(axis=1)]).T
 	mse = meanSquaredError(test[test.nonzero()].flatten(), predict[test.nonzero()].flatten())
-	print("mse of predict based on all is: ", str(mse))
+	print("mse of predict based on all is: " + str(mse))
+	return mse
+
+def predict_k(k, simMatrix, train, test):
+	predict = np.zeros((test.shape))
+	for userID in range(simMatrix.shape[0]):
+		#select top k except current userID
+		#since argsort gives inverse order, we use negative indexing
+		top_k = [np.argsort(simMatrix[:,userID], axis=-1, kind='quicksort')[-1:-k-1:-1]]
+		for movieID in range(train.shape[1]):
+			# similarity of curr user * ratingMatrix of curr item of top k / similarity of curr user sum
+			# it is simply one value
+			predict[userID, movieID] = simMatrix[userID,:][tuple(top_k)].dot(train[:,movieID][tuple(top_k)]) / np.sum(simMatrix[userID,:][tuple(top_k)])
+	mse = meanSquaredError(test[test.nonzero()].flatten(), predict[test.nonzero()].flatten())
+	print("mse of predict based on " + str(k) + " is: " + str(mse))
 	return mse
 
 
@@ -38,7 +52,6 @@ if __name__ == '__main__':
 	# Load and reformat data
 	# Default data position: data/ratings.csv
 	dataFile = 'data/ratings.csv'
-
 	if len(sys.argv) > 1:
 		# try command line input file as data resource
 		dataFile = sys.argv[1]
@@ -86,3 +99,8 @@ if __name__ == '__main__':
 
 	mse_all = predict_all(simMatrix, train, test)
 	print("predict based on all users")
+
+	k_list = [5, 10, 50, 100, 200]
+	mse_list = []
+	for k in k_list:
+		mse_list.append(predict_k(k, simMatrix, train, test))

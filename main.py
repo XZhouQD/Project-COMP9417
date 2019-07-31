@@ -18,6 +18,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, os
+import math
 
 if __name__ == '__main__':
 	# Part 1
@@ -39,8 +40,24 @@ if __name__ == '__main__':
 	# Construct rating matrix
 	# User x MovieItem = Rating
 	# ID starts from 1, index starts from 0
-	ratingMatrix = np.zeros((max(dataFrame.userID), max(dataFrame.movieID)))
+	nUsers = max(dataFrame.userID)
+	nMovies = max(dataFrame.movieID)
+	ratingMatrix = np.zeros((nUsers, nMovies))
 	for row in dataFrame.itertuples():
 		ratingMatrix[row[1]-1,row[2]-1] = row[3]
-
 	entryCount = dataFrame.shape[0]
+
+	# Part 3
+	# train-test split, we make 15% of testing
+	# randomly choose from user's rating, move them to testing
+	train = ratingMatrix.copy()
+	test = np.zeros((nUsers, nMovies))
+	for userID in range(nUsers):
+		userRatedMovies = ratingMatrix[userID,:].nonzero()[0];
+		nItemsTest = math.floor(len(userRatedMovies)*0.15)
+		rMovieID = np.random.choice(userRatedMovies, size=nItemsTest, replace=False)
+		test[userID,rMovieID] = ratingMatrix[userID,rMovieID]
+		train[userID,rMovieID] = 0
+
+	# Part 4
+

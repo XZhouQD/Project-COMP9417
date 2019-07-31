@@ -9,10 +9,9 @@
 
 # Environment:
 # Python 3.7.3
-# pandas 0.23.3
-# numpy 1.16.1
-# matplotlib 3.0.2
-
+# pandas 0.25.0
+# numpy 1.17.0
+# matplotlib 3.1.1
 
 import pandas as pd
 import numpy as np

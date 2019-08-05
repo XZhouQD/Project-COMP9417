@@ -10,8 +10,13 @@ def movie_id_to_name(top10_id):
 	header = ["MovieID", "MovieName", "Classification"]
 	dataFrame = pd.read_csv(dataFile, skiprows=1, sep='::', names=header, engine='python')
 	movie_name_list = []
+	counter = 0
 	for i in top10_id:
-		movie_name_list.append(np.array(dataFrame[dataFrame["MovieID"] == i]))
+		if counter == 10:
+			break
+		if len(np.array(dataFrame[dataFrame["MovieID"] == i])) != 0:
+			movie_name_list.append(np.array(dataFrame[dataFrame["MovieID"] == i]))
+			counter += 1
 	movie_name_list = np.array(movie_name_list)
 	print(movie_name_list)
 	return 
@@ -112,7 +117,7 @@ if __name__ == '__main__':
 				get_index = i[2] - 1
 				predict_list_with_index.drop([get_index], inplace = True)
 	sorted_predict_list_with_index = predict_list_with_index.copy()
-	sorted_predict_list_with_index = sorted_predict_list_with_index.sort_values(by=[0], ascending=False).head(10)
+	sorted_predict_list_with_index = sorted_predict_list_with_index.sort_values(by=[0], ascending=False).head(20)
 	print("Top 10 predicted movies:")
 	movie_id_to_name(sorted_predict_list_with_index["movieID"])
 

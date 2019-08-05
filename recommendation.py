@@ -35,7 +35,7 @@ def predict_k_list(k, simMatrix, train, test):
 		#select top k except current userID
 		#since argsort gives inverse order, we use negative indexing
 		top_k = [np.argsort(simMatrix[:, userID], axis=-1,
-		                    kind='quicksort')[-1:-k-1:-1]]
+		                    kind='quicksort')[-2:-k-2:-1]]
 		for movieID in range(train.shape[1]):
 			# similarity of curr user * ratingMatrix of curr item of top k / similarity of curr user sum
 			# it is simply one value

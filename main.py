@@ -33,7 +33,7 @@ def predict_all(simMatrix, train, test):
 	return mse
 
 def predict_k(k, simMatrix, train, test):
-	predict = np.zeros((test.shape))
+	predict = np.zeros(test.shape)
 	percent = -10
 	for userID in range(simMatrix.shape[0]):
 		if userID % (math.ceil(simMatrix.shape[0]/10)) == 0:
@@ -41,7 +41,8 @@ def predict_k(k, simMatrix, train, test):
 			print(percent, "% finished")
 		#select top k except current userID
 		#since argsort gives inverse order, we use negative indexing
-		top_k = [np.argsort(simMatrix[:,userID], axis=-1, kind='quicksort')[-1:-k-1:-1]]
+		#dispose himself : do not include index -1
+		top_k = [np.argsort(simMatrix[:,userID], axis=-1, kind='quicksort')[-2:-k-2:-1]]
 		for movieID in range(train.shape[1]):
 			# similarity of curr user * ratingMatrix of curr item of top k / similarity of curr user sum
 			# it is simply one value
@@ -49,6 +50,14 @@ def predict_k(k, simMatrix, train, test):
 	mse = meanSquaredError(test[test.nonzero()].flatten(), predict[test.nonzero()].flatten())
 	print("mse of predict based on " + str(k) + " is: " + str(mse))
 	return mse
+
+def recommand_k(userID, rank, k, simMatrix, ratingMatrix):
+	predict = np.zeros((simMatrix.shape))
+	top_k = [np.argsort(simMatrix[:,userID], axis=-1, kind='quicksort')[-2:-k-2:-1]]
+	for movieID in range(train.shape[1]):
+		if ratingMatrix[userID, movieID] == 0: #not marked by the user
+			predict[userID,movieID] = simMatrix[userID,:][tuple(top_k)].dot(ratingMatrix[:,movieID][tuple(top_k)]) / np.sum(simMatrix[userID,:][tuple(top_k)])
+	return [movieID for movieID in np.argsort(predict[userID,:])[-rank:]]
 
 
 if __name__ == '__main__':
@@ -101,6 +110,15 @@ if __name__ == '__main__':
 	norms = np.array([np.sqrt(np.diagonal(sim))]) #diagonal values
 	simMatrix = sim/(norms*norms.T)
 	print("similarity matrix established")
+
+	recSim = np.dot(ratingMatrix, ratingMatrix.T) + 1e-6
+	norms = np.array([np.sort(np.diagonal(recSim))])
+	recSimMatrix = recSim/(norms*norms.T)
+
+	print(recommand_k(15-1, 10, 50, recSimMatrix, ratingMatrix))
+
+
+
 
 	print("predict based on all users")
 	mse_all = predict_all(simMatrix, train, test)

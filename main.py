@@ -57,14 +57,16 @@ if __name__ == '__main__':
 	# Default data position: data/ratings.csv
 	#dataFile = 'data/ratings.csv'
 	dataFile = 'data-1m/ratings.dat'
-	if len(sys.argv) > 1:
+	split = '::'
+	if len(sys.argv) > 2:
 		# try command line input file as data resource
 		dataFile = sys.argv[1]
+		split = sys.argv[2]
 		if not os.path.isfile(dataFile):
 			exit("Input file name Error: Check your argument or use default data file.")
 
 	header = ["userID", "movieID", "rating", "timestamp"]
-	dataFrame = pd.read_csv(dataFile, skiprows=1, sep='::', names=header, engine='python')
+	dataFrame = pd.read_csv(dataFile, skiprows=1, sep=split, names=header, engine='python')
 	print("data read success")
 
 	# Part 2

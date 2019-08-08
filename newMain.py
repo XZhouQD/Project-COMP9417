@@ -177,7 +177,7 @@ if __name__ == '__main__':
 	# Part 5.5
 	# Visualise top-k prediction mse
 	yPos = np.arange(len(k_list))
-	plt.bar(yPos, k_list, align='center')
+	plt.bar(yPos, mse_list, align='center')
 	plt.xticks(yPos, k_list)
 	plt.ylabel('Mean Squared Error')
 	plt.title('MSE with top-k prediction')

@@ -108,14 +108,16 @@ if __name__ == '__main__':
 	# Default data position: data/ratings.csv
 	# dataFile = 'data/ratings.csv'
 	dataFile = 'data-1m/ratings.dat'
+	seperater = '::'
 	print("Initializing...")
-	if len(sys.argv) > 1:
+	if len(sys.argv) > 2:
 		# try command line input file as data resource
 		dataFile = sys.argv[1]
+		seperater = sys.argv[2]
 		if not os.path.isfile(dataFile):
 			exit("Input file name Error: Check your argument or use default data file.")
 	header = ["userID", "movieID", "rating", "timestamp"]
-	dataFrame = pd.read_csv(dataFile, skiprows=1, sep='::', names=header, engine='python')
+	dataFrame = pd.read_csv(dataFile, skiprows=1, sep=seperater, names=header, engine='python')
 	print("...Data read success.")
 	np.random.seed(9417) # constant random seed
 
@@ -156,7 +158,7 @@ if __name__ == '__main__':
 	# Part 5
 	# Calculate the mse based on all users.
 	# Calculate the mse based on different percentage of users.
-	# To find the minimum mse, use that number of users to proceed Part 6. 
+	# To find the minimum mse, use that number of users to proceed Part 6.
 	print("Run MSE calculation based on all users? (Y/N) (Might take up few seconds.)")
 	run_confirm = sys.stdin.readline()
 	if run_confirm == "Y\n" or run_confirm == "y\n":
@@ -195,11 +197,9 @@ if __name__ == '__main__':
 		except:
 			exit(f"Invalid UserID. UserID should be an integer within [1, {nUsers}].")
 		print(f"UserID: {target_user}")
-		top10_id = recommand_k(target_user, 10, 50, recSimMatrix, ratingMatrix)
+		top10_id = recommand_k(target_user, 10, 20, recSimMatrix, ratingMatrix)
 		movie_matrix = movieID_matrix_correction(nMovies)
 		print(f"{target_user}'s top 10 predicted movies are:")
 		print(movie_id_to_name(top10_id, movie_matrix))
 		print()
 		print("Input next UserID you want to predict, or other characters to exit.")
-
-

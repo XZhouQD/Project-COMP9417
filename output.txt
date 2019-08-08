@@ -1,0 +1,92 @@
+Initializing...
+...Data read success.
+...Rating matrix established.
+...Train-test split success.
+...Similarity matrix established.
+Run MSE calculation based on all users? (Y/N) (Might take up few seconds.)
+Mse of predict based on all is: 9.733063657709584.
+Run MSE calculation based on different percentage of users? (Y/N) (Might take up few minutes!!!)
+Predict based on top 5 user.
+0 % finished.
+10 % finished.
+20 % finished.
+30 % finished.
+40 % finished.
+50 % finished.
+60 % finished.
+70 % finished.
+80 % finished.
+90 % finished.
+Mse of predict based on 5 is: 5.7426492338335295.
+Predict based on top 10 user.
+0 % finished.
+10 % finished.
+20 % finished.
+30 % finished.
+40 % finished.
+50 % finished.
+60 % finished.
+70 % finished.
+80 % finished.
+90 % finished.
+Mse of predict based on 10 is: 5.514253621069893.
+Predict based on top 20 user.
+0 % finished.
+10 % finished.
+20 % finished.
+30 % finished.
+40 % finished.
+50 % finished.
+60 % finished.
+70 % finished.
+80 % finished.
+90 % finished.
+Mse of predict based on 20 is: 5.46075061184215.
+Predict based on top 50 user.
+0 % finished.
+10 % finished.
+20 % finished.
+30 % finished.
+40 % finished.
+50 % finished.
+60 % finished.
+70 % finished.
+80 % finished.
+90 % finished.
+Mse of predict based on 50 is: 5.541862370643763.
+Predict based on top 100 user.
+0 % finished.
+10 % finished.
+20 % finished.
+30 % finished.
+40 % finished.
+50 % finished.
+60 % finished.
+70 % finished.
+80 % finished.
+90 % finished.
+Mse of predict based on 100 is: 5.707498065894522.
+Input UserID you want to predict.
+UserID: 22
+22's top 10 predicted movies are:
+[[[259 'Kiss of Death (1995)' 'Crime|Drama|Thriller']]
+
+ [[355 'Flintstones, The (1994)' "Children's|Comedy"]]
+
+ [[592 'Batman (1989)' 'Action|Adventure|Crime|Drama']]
+
+ [[526 'Savage Nights (Nuits fauves, Les) (1992)' 'Drama']]
+
+ [[1386 'Terror in a Texas Town (1958)' 'Western']]
+
+ [[3470 'Dersu Uzala (1974)' 'Adventure|Drama']]
+
+ [[540 'Sliver (1993)' 'Thriller']]
+
+ [[2027 'Mafia! (1998)' 'Comedy|Crime']]
+
+ [[1616 'Peacemaker, The (1997)' 'Action|Thriller|War']]
+
+ [[2114 'Outsiders, The (1983)' 'Drama']]]
+
+Input next UserID you want to predict, or other characters to exit.

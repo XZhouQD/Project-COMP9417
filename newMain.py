@@ -157,9 +157,6 @@ if __name__ == '__main__':
 	# Calculate the mse based on all users.
 	# Calculate the mse based on different percentage of users.
 	# To find the minimum mse, use that number of users to proceed Part 6. 
-	recSim = np.dot(ratingMatrix, ratingMatrix.T) + 1e-6
-	norms = np.array([np.sort(np.diagonal(recSim))])
-	recSimMatrix = recSim/(norms*norms.T)
 	print("Run MSE calculation based on all users? (Y/N) (Might take up few seconds.)")
 	run_confirm = sys.stdin.readline()
 	if run_confirm == "Y\n" or run_confirm == "y\n":
@@ -175,20 +172,21 @@ if __name__ == '__main__':
 				mse_list.append(predict_k(k, simMatrix, train, test))
 		mse_list.append(mse_all)
 		k_list.append(nUsers)
-
-	# Part 5.5
-	# Visualise top-k prediction mse
-	yPos = np.arange(len(k_list))
-	plt.bar(yPos, mse_list, align='center')
-	plt.xticks(yPos, k_list)
-	plt.ylabel('Mean Squared Error')
-	plt.title('MSE with top-k prediction')
-
-	plt.show()
+		# Part 5.5
+		# Visualise top-k prediction mse
+		yPos = np.arange(len(k_list))
+		plt.bar(yPos, mse_list, align='center')
+		plt.xticks(yPos, k_list)
+		plt.ylabel('Mean Squared Error')
+		plt.title('MSE with top-k prediction')
+		plt.show()
 
 	# Part 6
 	# Get top 10 movies predicted with highest rankings and haven't seen before for input userID.
 	print("Input UserID you want to predict.")
+	recSim = np.dot(ratingMatrix, ratingMatrix.T) + 1e-6
+	norms = np.array([np.sort(np.diagonal(recSim))])
+	recSimMatrix = recSim/(norms*norms.T)
 	while True:
 		try:
 			target_user = int(sys.stdin.readline())

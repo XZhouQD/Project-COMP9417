@@ -117,9 +117,6 @@ if __name__ == '__main__':
 
 	print(recommand_k(15-1, 10, 50, recSimMatrix, ratingMatrix))
 
-
-
-
 	print("predict based on all users")
 	mse_all = predict_all(simMatrix, train, test)
 

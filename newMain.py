@@ -91,6 +91,8 @@ def movie_id_to_name(top10_id, matrix):
 	counter = 0
 	top10_id.reverse()
 	for i in top10_id:
+		if i == 0:
+			continue
 		if counter == 10:
 			break
 		temp = np.array(matrix[matrix["MovieID"] == i])
